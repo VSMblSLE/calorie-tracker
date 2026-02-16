@@ -20,7 +20,6 @@ export default function App() {
   const [showAddMeal,  setShowAddMeal]  = useState(false)
   const fileRef = useRef(null)
 
-  // ── File picker handlers (triggered by FAB → Scan) ─────────────────────────
   const handleScanClick = () => {
     if (fileRef.current) {
       fileRef.current.value = ''
@@ -35,11 +34,8 @@ export default function App() {
   }
 
   const handleScanClose = () => setPendingFile(null)
-
-  // ── Manual meal entry ──────────────────────────────────────────────────────
   const handleAddMeal = () => setShowAddMeal(true)
 
-  // ── Onboarding gate ────────────────────────────────────────────────────────
   if (!onboardingDone) {
     return (
       <>
@@ -49,7 +45,6 @@ export default function App() {
     )
   }
 
-  // ── Auth gate ──────────────────────────────────────────────────────────────
   if (!currentUser) {
     return (
       <>
@@ -63,7 +58,6 @@ export default function App() {
     <>
       <ToasterConfig />
 
-      {/* Hidden file input — triggered by FAB → Scan */}
       <input
         ref={fileRef}
         type="file"
@@ -84,16 +78,12 @@ export default function App() {
         {activeTab === 'profile'   && <Profile />}
       </Layout>
 
-      {/* AI Scanner overlay */}
       <ScannerModal file={pendingFile} onClose={handleScanClose} />
-
-      {/* Manual meal entry modal */}
       {showAddMeal && <AddMealModal onClose={() => setShowAddMeal(false)} />}
     </>
   )
 }
 
-// ─── Toast config ─────────────────────────────────────────────────────────────
 function ToasterConfig() {
   return (
     <Toaster
@@ -102,15 +92,15 @@ function ToasterConfig() {
       toastOptions={{
         duration: 3000,
         style: {
-          background: '#1e293b',
-          color:       '#f1f5f9',
-          border:      '1px solid #334155',
+          background: '#160830',
+          color:       '#f0e6ff',
+          border:      '1px solid #3d1a7a',
           borderRadius:'14px',
           fontSize:    '14px',
           maxWidth:    '340px',
         },
-        success: { iconTheme: { primary: '#10b981', secondary: '#fff' } },
-        error:   { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+        success: { iconTheme: { primary: '#a855f7', secondary: '#fff' } },
+        error:   { iconTheme: { primary: '#f43f5e', secondary: '#fff' } },
       }}
     />
   )

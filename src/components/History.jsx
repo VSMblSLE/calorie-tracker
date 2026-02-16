@@ -3,7 +3,6 @@ import { useAppStore } from '../store/useAppStore'
 import { Trash2, Search, X, CalendarDays, Flame, Plus, UtensilsCrossed } from 'lucide-react'
 import clsx from 'clsx'
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 const startOfDay   = (d) => new Date(d).setHours(0, 0, 0, 0)
 const startOfWeek  = () => { const d = new Date(); d.setDate(d.getDate() - d.getDay() + 1); d.setHours(0,0,0,0); return d.getTime() }
 const startOfMonth = () => { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); return d.getTime() }
@@ -31,7 +30,6 @@ const groupByDate = (meals) => {
   return [...map.values()].sort((a, b) => b.ts - a.ts)
 }
 
-// ─── History ──────────────────────────────────────────────────────────────────
 export default function History({ onAddMeal }) {
   const meals      = useAppStore((s) => s.meals)
   const user       = useAppStore((s) => s.currentUser)
@@ -70,21 +68,19 @@ export default function History({ onAddMeal }) {
 
   return (
     <div className="p-4 space-y-4 animate-fade-in">
-      {/* Header */}
       <div className="pt-3">
-        <p className="text-slate-400 text-sm">Дневник питания</p>
+        <p className="text-ddx-muted text-sm">Дневник питания</p>
         <h1 className="text-2xl font-bold text-white">История</h1>
       </div>
 
-      {/* Period tabs */}
-      <div className="flex rounded-xl bg-slate-800 p-1 gap-1">
+      <div className="flex rounded-xl bg-ddx-card border border-ddx-border p-1 gap-1">
         {PERIODS.map(({ id, label }) => (
           <button
             key={id}
             onClick={() => setPeriod(id)}
             className={clsx(
               'flex-1 py-1.5 rounded-lg text-xs font-medium transition-all',
-              period === id ? 'bg-emerald-500 text-white shadow' : 'text-slate-400 hover:text-white'
+              period === id ? 'bg-violet-600 text-white shadow shadow-violet-900' : 'text-ddx-muted hover:text-white'
             )}
           >
             {label}
@@ -92,9 +88,8 @@ export default function History({ onAddMeal }) {
         ))}
       </div>
 
-      {/* Search */}
       <div className="relative">
-        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ddx-muted pointer-events-none" />
         <input
           type="search"
           value={query}
@@ -103,54 +98,52 @@ export default function History({ onAddMeal }) {
           className="input-field pl-10 pr-10"
         />
         {query && (
-          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-ddx-muted hover:text-white">
             <X size={16} />
           </button>
         )}
       </div>
 
-      {/* Summary card */}
       {filtered.length > 0 && (
-        <div className="bg-slate-800 rounded-2xl p-4">
+        <div className="bg-ddx-card border border-ddx-border rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Flame size={16} className="text-emerald-400" />
+            <Flame size={16} className="text-violet-400" />
             <span className="text-white text-sm font-semibold">Итого ({filtered.length} блюд)</span>
           </div>
           <div className="grid grid-cols-4 gap-2">
             {[
-              { label: 'Калории', value: Math.round(totals.calories), unit: 'ккал', color: 'text-emerald-400' },
-              { label: 'Белки',   value: Math.round(totals.protein),  unit: 'г',    color: 'text-red-400'     },
-              { label: 'Жиры',    value: Math.round(totals.fat),      unit: 'г',    color: 'text-yellow-400'  },
-              { label: 'Углеводы',value: Math.round(totals.carbs),    unit: 'г',    color: 'text-blue-400'    },
+              { label: 'Калории', value: Math.round(totals.calories), unit: 'ккал', color: 'text-violet-400' },
+              { label: 'Белки',   value: Math.round(totals.protein),  unit: 'г',    color: 'text-rose-400'   },
+              { label: 'Жиры',    value: Math.round(totals.fat),      unit: 'г',    color: 'text-amber-400'  },
+              { label: 'Углеводы',value: Math.round(totals.carbs),    unit: 'г',    color: 'text-cyan-400'   },
             ].map(({ label, value, unit, color }) => (
               <div key={label} className="text-center">
                 <p className={clsx('text-lg font-bold leading-none', color)}>{value}</p>
-                <p className="text-[10px] text-slate-500 mt-0.5">{unit}</p>
-                <p className="text-[10px] text-slate-400">{label}</p>
+                <p className="text-[10px] text-ddx-dim mt-0.5">{unit}</p>
+                <p className="text-[10px] text-ddx-muted">{label}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Groups */}
       {groups.length === 0 ? (
-        <div className="bg-slate-800 rounded-2xl p-10 text-center space-y-4">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-slate-700 flex items-center justify-center animate-pulse-slow">
-            <UtensilsCrossed size={32} className="text-slate-500" />
+        <div className="bg-ddx-card border border-ddx-border rounded-2xl p-10 text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-ddx-elevated border border-ddx-border flex items-center justify-center animate-pulse-slow">
+            <UtensilsCrossed size={32} className="text-ddx-muted" />
           </div>
           <div>
-            <p className="text-slate-300 font-medium">
+            <p className="text-ddx-text font-medium">
               {query ? 'Ничего не найдено' : 'Нет записей за этот период'}
             </p>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-ddx-dim text-sm mt-1">
               {query ? 'Попробуйте другой запрос' : 'Добавьте первый приём пищи'}
             </p>
           </div>
           {!query && (
             <button
               onClick={onAddMeal}
-              className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white font-medium rounded-xl transition-all active:scale-95 inline-flex items-center gap-2 text-sm mx-auto"
+              className="px-5 py-2.5 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-all active:scale-95 inline-flex items-center gap-2 text-sm mx-auto shadow-neon-purple"
             >
               <Plus size={16} /> Добавить блюдо
             </button>
@@ -161,33 +154,33 @@ export default function History({ onAddMeal }) {
           {groups.map((group) => (
             <div key={group.label}>
               <div className="flex items-center gap-2 mb-2">
-                <CalendarDays size={13} className="text-slate-500" />
-                <span className="text-xs text-slate-400 font-medium">{group.label}</span>
-                <div className="flex-1 h-px bg-slate-700/60" />
-                <span className="text-xs text-slate-500">
+                <CalendarDays size={13} className="text-ddx-dim" />
+                <span className="text-xs text-ddx-muted font-medium">{group.label}</span>
+                <div className="flex-1 h-px bg-ddx-border" />
+                <span className="text-xs text-ddx-dim">
                   {group.meals.reduce((a, m) => a + m.calories, 0)} ккал
                 </span>
               </div>
 
               <div className="space-y-2">
                 {[...group.meals].reverse().map((meal) => (
-                  <div key={meal.id} className="bg-slate-800 rounded-2xl p-4 flex items-center gap-3">
+                  <div key={meal.id} className="bg-ddx-card border border-ddx-border rounded-2xl p-4 flex items-center gap-3">
                     <div className="flex-1 min-w-0">
                       <p className="text-white font-medium truncate">{meal.name}</p>
                       <div className="flex items-center gap-3 mt-0.5">
-                        <span className="text-emerald-400 text-sm font-bold">{meal.calories} ккал</span>
-                        <span className="text-slate-500 text-xs">{fmtTime(meal.timestamp)}</span>
+                        <span className="text-violet-400 text-sm font-bold">{meal.calories} ккал</span>
+                        <span className="text-ddx-dim text-xs">{fmtTime(meal.timestamp)}</span>
                       </div>
                       <div className="flex gap-3 mt-0.5">
-                        <span className="text-xs text-slate-400">Б:{meal.protein}г</span>
-                        <span className="text-xs text-slate-400">Ж:{meal.fat}г</span>
-                        <span className="text-xs text-slate-400">У:{meal.carbs}г</span>
-                        {meal.weight_g > 0 && <span className="text-xs text-slate-500">{meal.weight_g}г</span>}
+                        <span className="text-xs text-ddx-muted">Б:{meal.protein}г</span>
+                        <span className="text-xs text-ddx-muted">Ж:{meal.fat}г</span>
+                        <span className="text-xs text-ddx-muted">У:{meal.carbs}г</span>
+                        {meal.weight_g > 0 && <span className="text-xs text-ddx-dim">{meal.weight_g}г</span>}
                       </div>
                     </div>
                     <button
                       onClick={() => deleteMeal(meal.id)}
-                      className="p-2 text-slate-500 hover:text-red-400 transition-colors rounded-xl hover:bg-slate-700 shrink-0"
+                      className="p-2 text-ddx-dim hover:text-rose-400 transition-colors rounded-xl hover:bg-rose-500/10 shrink-0"
                     >
                       <Trash2 size={16} />
                     </button>

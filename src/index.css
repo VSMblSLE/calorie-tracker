@@ -9,7 +9,7 @@
   }
 
   body {
-    background: #0f172a;
+    background: #060010;
     overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
   }
@@ -32,7 +32,7 @@
   }
 
   input[type='range']::-webkit-slider-track {
-    background: #334155;
+    background: #2a1055;
     height: 6px;
     border-radius: 3px;
   }
@@ -42,14 +42,14 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #10b981;
-    border: 3px solid #0f172a;
+    background: #a855f7;
+    border: 3px solid #060010;
     margin-top: -7px;
-    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
   }
 
   input[type='range']::-moz-range-track {
-    background: #334155;
+    background: #2a1055;
     height: 6px;
     border-radius: 3px;
   }
@@ -58,9 +58,9 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #10b981;
-    border: 3px solid #0f172a;
-    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    background: #a855f7;
+    border: 3px solid #060010;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
   }
 
   * { box-sizing: border-box; }
@@ -68,17 +68,25 @@
 
 @layer components {
   .input-field {
-    @apply w-full bg-slate-700 text-white rounded-xl px-4 py-3
-           border border-slate-600
-           focus:outline-none focus:ring-2 focus:ring-emerald-500
-           placeholder:text-slate-500
+    @apply w-full bg-ddx-elevated text-ddx-text rounded-xl px-4 py-3
+           border border-ddx-border
+           focus:outline-none focus:ring-2 focus:ring-violet-500
+           placeholder:text-ddx-dim
            transition-shadow;
   }
 
   .btn-primary {
-    @apply bg-emerald-500 hover:bg-emerald-400 active:scale-95
+    @apply bg-violet-600 hover:bg-violet-500 active:scale-95
            text-white font-semibold py-3 rounded-xl
-           transition-all;
+           transition-all shadow-neon-purple;
+  }
+
+  .card-ddx {
+    @apply bg-ddx-card border border-ddx-border rounded-2xl;
+  }
+
+  .card-ddx-elevated {
+    @apply bg-ddx-elevated border border-ddx-border2 rounded-2xl;
   }
 }
 
@@ -93,6 +101,21 @@
 
   .animate-pulse-slow {
     animation: pulseSlow 2s ease-in-out infinite;
+  }
+
+  .text-neon-purple {
+    color: #a855f7;
+    text-shadow: 0 0 12px rgba(168, 85, 247, 0.8);
+  }
+
+  .text-neon-cyan {
+    color: #22d3ee;
+    text-shadow: 0 0 12px rgba(34, 211, 238, 0.8);
+  }
+
+  .border-glow {
+    border-color: #a855f7;
+    box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.3), 0 0 20px rgba(168, 85, 247, 0.15);
   }
 
   @keyframes slideUp {

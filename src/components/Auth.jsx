@@ -14,7 +14,7 @@ function validate({ name, email, password, mode }) {
 
 export default function Auth() {
   const { login, register } = useAppStore()
-  const [mode, setMode]           = useState('login') // 'login' | 'register'
+  const [mode, setMode]           = useState('login')
   const [form, setForm]           = useState({ name: '', email: '', password: '' })
   const [showPass, setShowPass]   = useState(false)
   const [loading, setLoading]     = useState(false)
@@ -44,26 +44,31 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-ddx-bg flex flex-col items-center justify-center px-6 py-12">
+      {/* Glow orb background */}
+      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-violet-600/10 blur-3xl pointer-events-none" />
+
       {/* Logo */}
-      <div className="flex flex-col items-center mb-10">
-        <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mb-4">
-          <Flame size={32} className="text-emerald-400" />
+      <div className="flex flex-col items-center mb-10 relative z-10">
+        <div className="w-16 h-16 rounded-2xl bg-violet-500/20 border border-violet-500/40 flex items-center justify-center mb-4 shadow-neon-purple">
+          <Flame size={32} className="text-violet-400" />
         </div>
         <h1 className="text-3xl font-bold text-white">CalorieAI</h1>
-        <p className="text-slate-400 text-sm mt-1">Умный счётчик калорий</p>
+        <p className="text-ddx-muted text-sm mt-1">Умный счётчик калорий</p>
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-sm bg-slate-800 rounded-3xl p-6 shadow-2xl">
+      <div className="w-full max-w-sm bg-ddx-card rounded-3xl p-6 border border-ddx-border relative z-10">
         {/* Tabs */}
-        <div className="flex rounded-xl bg-slate-700/50 p-1 mb-6">
-          {(['login', 'register'] ).map((m) => (
+        <div className="flex rounded-xl bg-ddx-bg p-1 mb-6 border border-ddx-border">
+          {(['login', 'register']).map((m) => (
             <button
               key={m}
               onClick={() => setMode(m)}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                mode === m ? 'bg-emerald-500 text-white shadow' : 'text-slate-400 hover:text-white'
+                mode === m
+                  ? 'bg-violet-600 text-white shadow shadow-violet-900'
+                  : 'text-ddx-muted hover:text-white'
               }`}
             >
               {m === 'login' ? 'Вход' : 'Регистрация'}
@@ -74,7 +79,7 @@ export default function Auth() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'register' && (
             <div>
-              <label className="text-xs text-slate-400 mb-1 block">Имя</label>
+              <label className="text-xs text-ddx-muted mb-1 block">Имя</label>
               <input
                 type="text"
                 value={form.name}
@@ -87,7 +92,7 @@ export default function Auth() {
           )}
 
           <div>
-            <label className="text-xs text-slate-400 mb-1 block">Email</label>
+            <label className="text-xs text-ddx-muted mb-1 block">Email</label>
             <input
               type="email"
               value={form.email}
@@ -99,7 +104,7 @@ export default function Auth() {
           </div>
 
           <div>
-            <label className="text-xs text-slate-400 mb-1 block">Пароль</label>
+            <label className="text-xs text-ddx-muted mb-1 block">Пароль</label>
             <div className="relative">
               <input
                 type={showPass ? 'text' : 'password'}
@@ -112,7 +117,7 @@ export default function Auth() {
               <button
                 type="button"
                 onClick={() => setShowPass((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-ddx-muted hover:text-white"
               >
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -122,7 +127,7 @@ export default function Auth() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 mt-2"
+            className="w-full bg-violet-600 hover:bg-violet-500 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 mt-2 shadow-neon-purple"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : null}
             {mode === 'login' ? 'Войти' : 'Создать аккаунт'}
@@ -130,7 +135,7 @@ export default function Auth() {
         </form>
       </div>
 
-      <p className="text-slate-500 text-xs mt-6 text-center px-4">
+      <p className="text-ddx-dim text-xs mt-6 text-center px-4">
         Данные хранятся только на вашем устройстве
       </p>
     </div>

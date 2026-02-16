@@ -9,12 +9,11 @@ import {
 } from 'lucide-react'
 import clsx from 'clsx'
 
-// ─── Section wrapper ──────────────────────────────────────────────────────────
 function Section({ icon: Icon, title, children }) {
   return (
-    <div className="bg-slate-800 rounded-3xl p-5 space-y-4">
+    <div className="bg-ddx-card border border-ddx-border rounded-3xl p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <Icon size={18} className="text-emerald-400" />
+        <Icon size={18} className="text-violet-400" />
         <h2 className="text-white font-semibold">{title}</h2>
       </div>
       {children}
@@ -22,13 +21,12 @@ function Section({ icon: Icon, title, children }) {
   )
 }
 
-// ─── Slider Field ────────────────────────────────────────────────────────────
 function SliderField({ label, unit, value, min, max, step = 1, onChange }) {
   const isValid = value >= min && value <= max
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
-        <label className="text-xs text-slate-400">{label}</label>
+        <label className="text-xs text-ddx-muted">{label}</label>
         <div className="flex items-center gap-1">
           <input
             type="number"
@@ -36,11 +34,11 @@ function SliderField({ label, unit, value, min, max, step = 1, onChange }) {
             min={min} max={max}
             onChange={(e) => onChange(Number(e.target.value))}
             className={clsx(
-              'w-16 bg-slate-700 text-white text-center rounded-lg px-2 py-1.5 text-sm font-medium border focus:outline-none focus:ring-2 focus:ring-emerald-500',
-              isValid ? 'border-slate-600' : 'border-red-500'
+              'w-16 bg-ddx-elevated text-white text-center rounded-lg px-2 py-1.5 text-sm font-medium border focus:outline-none focus:ring-2 focus:ring-violet-500',
+              isValid ? 'border-ddx-border' : 'border-rose-500'
             )}
           />
-          <span className="text-slate-400 text-xs w-6">{unit}</span>
+          <span className="text-ddx-muted text-xs w-6">{unit}</span>
         </div>
       </div>
       <input
@@ -48,13 +46,13 @@ function SliderField({ label, unit, value, min, max, step = 1, onChange }) {
         min={min} max={max} step={step}
         value={Math.max(min, Math.min(max, value))}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-emerald-500 h-2"
+        className="w-full h-2"
       />
-      <div className="flex justify-between text-[10px] text-slate-600 mt-0.5">
+      <div className="flex justify-between text-[10px] text-ddx-dim mt-0.5">
         <span>{min}</span>
         <span>{max}</span>
       </div>
-      {!isValid && <p className="text-red-400 text-[10px] mt-0.5">Значение от {min} до {max}</p>}
+      {!isValid && <p className="text-rose-400 text-[10px] mt-0.5">Значение от {min} до {max}</p>}
     </div>
   )
 }
@@ -88,7 +86,6 @@ export default function Profile() {
 
   const totalCount = meals.filter((m) => m.userId === currentUser?.id).length
 
-  // ── Handlers ────────────────────────────────────────────────────────────────
   const handleSaveKey = () => {
     if (!keyInput.trim()) { toast.error('Введите API ключ'); return }
     setApiKey(keyInput.trim())
@@ -134,7 +131,6 @@ export default function Profile() {
     toast('Вы вышли из аккаунта')
   }
 
-  // Export
   const handleExport = () => {
     const data = exportData()
     if (!data) return
@@ -148,7 +144,6 @@ export default function Profile() {
     toast.success('Данные экспортированы')
   }
 
-  // Import
   const handleImport = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -166,7 +161,6 @@ export default function Profile() {
     e.target.value = ''
   }
 
-  // ── BMI ──────────────────────────────────────────────────────────────────────
   const bmi = profile.height > 0
     ? (profile.weight / ((profile.height / 100) ** 2)).toFixed(1)
     : '—'
@@ -174,12 +168,11 @@ export default function Profile() {
     ? Number(bmi) < 18.5 ? 'Дефицит' : Number(bmi) < 25 ? 'Норма' : Number(bmi) < 30 ? 'Избыток' : 'Ожирение'
     : '—'
   const bmiColor = !isNaN(Number(bmi))
-    ? Number(bmi) < 18.5 ? 'text-blue-400' : Number(bmi) < 25 ? 'text-emerald-400' : Number(bmi) < 30 ? 'text-yellow-400' : 'text-red-400'
-    : 'text-slate-400'
+    ? Number(bmi) < 18.5 ? 'text-cyan-400' : Number(bmi) < 25 ? 'text-violet-400' : Number(bmi) < 30 ? 'text-amber-400' : 'text-rose-400'
+    : 'text-ddx-muted'
 
   return (
     <div className="p-4 space-y-4 animate-fade-in">
-      {/* Confirm dialog */}
       {confirmDialog && (
         <ConfirmDialog
           {...confirmDialog}
@@ -187,18 +180,17 @@ export default function Profile() {
         />
       )}
 
-      {/* Hidden file input for import */}
       <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
 
       {/* Header */}
       <div className="pt-3 flex items-center justify-between">
         <div>
-          <p className="text-slate-400 text-sm">Личный кабинет</p>
+          <p className="text-ddx-muted text-sm">Личный кабинет</p>
           <h1 className="text-2xl font-bold text-white">Профиль</h1>
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-red-500/10 text-slate-400 hover:text-red-400 rounded-xl text-sm transition-all border border-slate-700 hover:border-red-500/30"
+          className="flex items-center gap-1.5 px-3 py-2 bg-ddx-card hover:bg-rose-500/10 text-ddx-muted hover:text-rose-400 rounded-xl text-sm transition-all border border-ddx-border hover:border-rose-500/30"
         >
           <LogOut size={15} />
           Выйти
@@ -206,30 +198,30 @@ export default function Profile() {
       </div>
 
       {/* User card */}
-      <div className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/10 border border-emerald-500/20 rounded-3xl p-5">
+      <div className="bg-gradient-to-r from-violet-500/20 to-fuchsia-600/10 border border-violet-500/20 rounded-3xl p-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500/30 flex items-center justify-center text-2xl font-bold text-emerald-300">
+          <div className="w-14 h-14 rounded-2xl bg-violet-500/30 border border-violet-500/40 flex items-center justify-center text-2xl font-bold text-violet-300 shadow-neon-purple">
             {currentUser?.name?.charAt(0)?.toUpperCase() ?? '?'}
           </div>
           <div>
             <p className="text-white font-bold text-lg">{currentUser?.name}</p>
-            <p className="text-slate-400 text-sm">{currentUser?.email}</p>
+            <p className="text-ddx-muted text-sm">{currentUser?.email}</p>
           </div>
         </div>
         <div className="flex gap-4 mt-4">
           <div className="text-center flex-1">
-            <p className="text-emerald-400 font-bold text-xl">{todayCount}</p>
-            <p className="text-slate-400 text-xs">сегодня</p>
+            <p className="text-violet-400 font-bold text-xl">{todayCount}</p>
+            <p className="text-ddx-muted text-xs">сегодня</p>
           </div>
-          <div className="w-px bg-slate-700" />
+          <div className="w-px bg-ddx-border" />
           <div className="text-center flex-1">
-            <p className="text-emerald-400 font-bold text-xl">{totalCount}</p>
-            <p className="text-slate-400 text-xs">всего блюд</p>
+            <p className="text-violet-400 font-bold text-xl">{totalCount}</p>
+            <p className="text-ddx-muted text-xs">всего блюд</p>
           </div>
-          <div className="w-px bg-slate-700" />
+          <div className="w-px bg-ddx-border" />
           <div className="text-center flex-1">
             <p className={clsx('font-bold text-xl', bmiColor)}>{bmi}</p>
-            <p className="text-slate-400 text-xs">ИМТ ({bmiLabel})</p>
+            <p className="text-ddx-muted text-xs">ИМТ ({bmiLabel})</p>
           </div>
         </div>
       </div>
@@ -238,7 +230,7 @@ export default function Profile() {
       <Section icon={User} title="Личные данные">
         <div className="space-y-4">
           <div>
-            <label className="text-xs text-slate-400 mb-1 block">Имя</label>
+            <label className="text-xs text-ddx-muted mb-1 block">Имя</label>
             <input type="text" value={profile.name} onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))} className="input-field" placeholder="Ваше имя" />
           </div>
           <SliderField label="Вес" unit="кг" value={profile.weight} min={30} max={300} onChange={(v) => setProfile(p => ({ ...p, weight: v }))} />
@@ -253,7 +245,7 @@ export default function Profile() {
       {/* Water goal */}
       <Section icon={Droplets} title="Норма воды">
         <SliderField label="Дневная норма" unit="мл" value={profile.waterGoal} min={500} max={5000} step={100} onChange={(v) => setProfile(p => ({ ...p, waterGoal: v }))} />
-        <p className="text-slate-500 text-xs">Рекомендация: ~30 мл на 1 кг веса = <span className="text-blue-400 font-medium">{Math.round(profile.weight * 30)} мл</span></p>
+        <p className="text-ddx-dim text-xs">Рекомендация: ~30 мл на 1 кг веса = <span className="text-cyan-400 font-medium">{Math.round(profile.weight * 30)} мл</span></p>
         <button onClick={() => { updateProfile({ waterGoal: profile.waterGoal }); toast.success('Норма воды обновлена') }} className="btn-primary w-full flex items-center justify-center gap-2">
           <Save size={16} /> Сохранить
         </button>
@@ -262,10 +254,10 @@ export default function Profile() {
       {/* Daily goals */}
       <Section icon={Target} title="Дневные цели">
         {[
-          { key: 'calories', label: 'Калории', unit: 'ккал', color: 'text-emerald-400', min: 500,  max: 10000 },
-          { key: 'protein',  label: 'Белки',   unit: 'г',    color: 'text-red-400',     min: 10,   max: 500   },
-          { key: 'fat',      label: 'Жиры',    unit: 'г',    color: 'text-yellow-400',  min: 10,   max: 300   },
-          { key: 'carbs',    label: 'Углеводы',unit: 'г',    color: 'text-blue-400',    min: 10,   max: 1000  },
+          { key: 'calories', label: 'Калории', unit: 'ккал', color: 'text-violet-400', min: 500,  max: 10000 },
+          { key: 'protein',  label: 'Белки',   unit: 'г',    color: 'text-rose-400',   min: 10,   max: 500   },
+          { key: 'fat',      label: 'Жиры',    unit: 'г',    color: 'text-amber-400',  min: 10,   max: 300   },
+          { key: 'carbs',    label: 'Углеводы',unit: 'г',    color: 'text-cyan-400',   min: 10,   max: 1000  },
         ].map(({ key, label, unit, color, min, max }) => (
           <div key={key} className="flex items-center justify-between">
             <span className={clsx('text-sm font-medium w-24', color)}>{label}</span>
@@ -275,9 +267,9 @@ export default function Profile() {
                 value={goals[key]}
                 min={min} max={max}
                 onChange={(e) => setGoals((p) => ({ ...p, [key]: Number(e.target.value) }))}
-                className="w-24 bg-slate-700 text-white text-right rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-slate-600"
+                className="w-24 bg-ddx-elevated text-white text-right rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 border border-ddx-border"
               />
-              <span className="text-slate-400 text-sm w-8">{unit}</span>
+              <span className="text-ddx-muted text-sm w-8">{unit}</span>
             </div>
           </div>
         ))}
@@ -288,9 +280,9 @@ export default function Profile() {
 
       {/* API Key */}
       <Section icon={Key} title="Gemini API Key">
-        <p className="text-slate-400 text-xs leading-relaxed">
+        <p className="text-ddx-muted text-xs leading-relaxed">
           Получите бесплатный ключ на{' '}
-          <span className="text-emerald-400 font-medium">aistudio.google.com</span>{' '}
+          <span className="text-violet-400 font-medium">aistudio.google.com</span>{' '}
           для AI-сканирования фото еды
         </p>
         <div className="relative">
@@ -301,12 +293,12 @@ export default function Profile() {
             placeholder="AIzaSy..."
             className="input-field pr-12 font-mono text-sm"
           />
-          <button onClick={() => setShowKey((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+          <button onClick={() => setShowKey((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ddx-muted hover:text-white">
             {showKey ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
         {apiKey && (
-          <div className="flex items-center gap-2 text-emerald-400 text-xs bg-emerald-500/10 rounded-xl px-3 py-2 border border-emerald-500/20">
+          <div className="flex items-center gap-2 text-violet-400 text-xs bg-violet-500/10 rounded-xl px-3 py-2 border border-violet-500/20">
             <Info size={12} />
             API ключ установлен
           </div>
@@ -321,13 +313,13 @@ export default function Profile() {
         <div className="flex gap-3">
           <button
             onClick={handleExport}
-            className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-600 text-sm"
+            className="flex-1 py-3 bg-ddx-elevated hover:bg-ddx-border text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-ddx-border text-sm"
           >
             <Download size={16} /> Экспорт
           </button>
           <button
             onClick={() => importRef.current?.click()}
-            className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-600 text-sm"
+            className="flex-1 py-3 bg-ddx-elevated hover:bg-ddx-border text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-ddx-border text-sm"
           >
             <Upload size={16} /> Импорт
           </button>
@@ -336,25 +328,25 @@ export default function Profile() {
 
       {/* Demo mode */}
       <Section icon={Database} title="Тестовый режим">
-        <p className="text-slate-400 text-xs">
+        <p className="text-ddx-muted text-xs">
           Загрузите демо-данные для проверки интерфейса
         </p>
         <button
           onClick={handleLoadMock}
-          className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-600"
+          className="w-full py-3 bg-ddx-elevated hover:bg-ddx-border text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-ddx-border"
         >
           <Database size={16} /> Загрузить тестовые данные
         </button>
         <button
           onClick={handleClear}
-          className="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-red-500/20"
+          className="w-full py-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-medium rounded-xl transition-all flex items-center justify-center gap-2 border border-rose-500/20"
         >
           <Trash2 size={16} /> Удалить все мои записи
         </button>
       </Section>
 
       <div className="text-center pb-4">
-        <p className="text-slate-600 text-xs">CalorieAI v2.0 • Данные хранятся локально</p>
+        <p className="text-ddx-dim text-xs">CalorieAI v2.0 • Данные хранятся локально</p>
       </div>
     </div>
   )

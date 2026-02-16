@@ -44,23 +44,22 @@ export default function WaterTracker() {
     }
   }
 
-  // Water fill color
-  const fillColor = pct >= 100 ? 'bg-blue-400' : pct >= 70 ? 'bg-blue-500' : 'bg-blue-600'
-  const textColor = pct >= 100 ? 'text-blue-300' : pct >= 70 ? 'text-blue-400' : 'text-blue-500'
+  const strokeColor = pct >= 100 ? '#22d3ee' : pct >= 70 ? '#06b6d4' : '#0891b2'
+  const textColor   = pct >= 100 ? 'text-cyan-300' : pct >= 70 ? 'text-cyan-400' : 'text-cyan-500'
 
   return (
-    <div className="bg-slate-800 rounded-3xl p-5 space-y-4">
+    <div className="bg-ddx-card border border-ddx-border rounded-3xl p-5 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Droplets size={18} className="text-blue-400" />
+          <Droplets size={18} className="text-cyan-400" />
           <h2 className="text-white font-semibold text-sm">Вода</h2>
         </div>
         <button
           onClick={() => setShowTimeline(!showTimeline)}
           className={clsx(
             'text-xs px-2.5 py-1 rounded-lg transition-all',
-            showTimeline ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:text-white'
+            showTimeline ? 'bg-cyan-500/20 text-cyan-400' : 'text-ddx-muted hover:text-white'
           )}
         >
           <Clock size={13} className="inline mr-1" />
@@ -68,34 +67,36 @@ export default function WaterTracker() {
         </button>
       </div>
 
-      {/* Progress ring / bar */}
+      {/* Progress ring */}
       <div className="flex items-center gap-4">
-        {/* Circular progress */}
         <div className="relative w-20 h-20 shrink-0">
           <svg className="w-20 h-20 -rotate-90" viewBox="0 0 72 72">
-            <circle cx="36" cy="36" r="30" fill="none" stroke="#1e293b" strokeWidth="6" />
+            <circle cx="36" cy="36" r="30" fill="none" stroke="#2a1055" strokeWidth="6" />
             <circle
               cx="36" cy="36" r="30" fill="none"
-              stroke="#3b82f6" strokeWidth="6" strokeLinecap="round"
+              stroke={strokeColor} strokeWidth="6" strokeLinecap="round"
               strokeDasharray={`${pct * 1.885} 188.5`}
               className="transition-all duration-500"
+              style={{ filter: `drop-shadow(0 0 6px ${strokeColor}80)` }}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-white font-bold text-sm leading-none">{Math.round(pct)}%</span>
-            <span className="text-[9px] text-slate-400">{glasses} стак.</span>
+            <span className="text-[9px] text-ddx-muted">{glasses} стак.</span>
           </div>
         </div>
 
-        {/* Stats */}
         <div className="flex-1">
           <p className={clsx('text-2xl font-bold', textColor)}>
-            {totalToday}<span className="text-sm text-slate-400 font-normal"> мл</span>
+            {totalToday}<span className="text-sm text-ddx-muted font-normal"> мл</span>
           </p>
-          <p className="text-slate-400 text-xs">из {waterGoal} мл</p>
+          <p className="text-ddx-muted text-xs">из {waterGoal} мл</p>
 
-          <div className="mt-2 h-2 bg-slate-700 rounded-full overflow-hidden">
-            <div className={clsx('h-full rounded-full transition-all duration-500', fillColor)} style={{ width: `${pct}%` }} />
+          <div className="mt-2 h-2 bg-ddx-border rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${pct}%`, background: strokeColor, boxShadow: `0 0 8px ${strokeColor}60` }}
+            />
           </div>
         </div>
       </div>
@@ -106,7 +107,7 @@ export default function WaterTracker() {
           <button
             key={ml}
             onClick={() => handleAdd(ml)}
-            className="flex-1 min-w-[60px] py-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-xs font-medium rounded-xl transition-all active:scale-95 border border-blue-500/20"
+            className="flex-1 min-w-[60px] py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-xs font-medium rounded-xl transition-all active:scale-95 border border-cyan-500/20"
           >
             +{ml}мл
           </button>
@@ -117,23 +118,23 @@ export default function WaterTracker() {
       <div className="flex items-center gap-2">
         <button
           onClick={() => setCustom(Math.max(50, custom - 50))}
-          className="p-2 bg-slate-700 rounded-xl text-slate-400 hover:text-white transition-colors"
+          className="p-2 bg-ddx-elevated border border-ddx-border rounded-xl text-ddx-muted hover:text-white transition-colors"
         >
           <Minus size={16} />
         </button>
         <div className="flex-1 text-center">
           <span className="text-white font-bold">{custom}</span>
-          <span className="text-slate-400 text-sm"> мл</span>
+          <span className="text-ddx-muted text-sm"> мл</span>
         </div>
         <button
           onClick={() => setCustom(Math.min(1000, custom + 50))}
-          className="p-2 bg-slate-700 rounded-xl text-slate-400 hover:text-white transition-colors"
+          className="p-2 bg-ddx-elevated border border-ddx-border rounded-xl text-ddx-muted hover:text-white transition-colors"
         >
           <Plus size={16} />
         </button>
         <button
           onClick={() => handleAdd(custom)}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white font-medium rounded-xl transition-all active:scale-95 flex items-center gap-1"
+          className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-medium rounded-xl transition-all active:scale-95 flex items-center gap-1 shadow-neon-cyan"
         >
           <Plus size={14} />
           Добавить
@@ -142,15 +143,15 @@ export default function WaterTracker() {
 
       {/* Timeline */}
       {showTimeline && todayWater.length > 0 && (
-        <div className="space-y-1.5 pt-1 border-t border-slate-700">
+        <div className="space-y-1.5 pt-1 border-t border-ddx-border">
           {[...todayWater].reverse().map((w) => (
             <div key={w.id} className="flex items-center gap-3 text-xs">
-              <span className="text-slate-500 w-10">{fmtTime(w.timestamp)}</span>
-              <div className="h-2 w-2 rounded-full bg-blue-500" />
-              <span className="text-blue-400 font-medium flex-1">+{w.amount} мл</span>
+              <span className="text-ddx-dim w-10">{fmtTime(w.timestamp)}</span>
+              <div className="h-2 w-2 rounded-full bg-cyan-500" style={{ boxShadow: '0 0 6px #06b6d4' }} />
+              <span className="text-cyan-400 font-medium flex-1">+{w.amount} мл</span>
               <button
                 onClick={() => deleteWater(w.id)}
-                className="p-1 text-slate-600 hover:text-red-400 transition-colors"
+                className="p-1 text-ddx-dim hover:text-rose-400 transition-colors"
               >
                 <Trash2 size={12} />
               </button>

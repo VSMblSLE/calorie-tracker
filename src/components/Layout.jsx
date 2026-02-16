@@ -22,15 +22,14 @@ export default function Layout({ activeTab, setActiveTab, onScanClick, onAddMeal
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-slate-900 text-white max-w-md mx-auto">
-      {/* scrollable content */}
+    <div className="relative flex flex-col min-h-screen bg-ddx-bg text-white max-w-md mx-auto">
       <main className="flex-1 overflow-y-auto pb-28">
         {children}
       </main>
 
       {/* FAB menu backdrop */}
       {fabOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 max-w-md mx-auto" onClick={() => setFabOpen(false)} />
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 max-w-md mx-auto" onClick={() => setFabOpen(false)} />
       )}
 
       {/* FAB menu options */}
@@ -38,33 +37,33 @@ export default function Layout({ activeTab, setActiveTab, onScanClick, onAddMeal
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3 animate-fade-in">
           <button
             onClick={handleScan}
-            className="flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-2xl px-5 py-3 shadow-xl hover:bg-slate-700 transition-all active:scale-95"
+            className="flex items-center gap-3 bg-ddx-elevated border border-ddx-border2 rounded-2xl px-5 py-3 shadow-neon-purple hover:border-violet-500/60 transition-all active:scale-95"
           >
-            <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
-              <Camera size={20} className="text-violet-400" />
+            <div className="w-10 h-10 rounded-xl bg-fuchsia-500/20 flex items-center justify-center">
+              <Camera size={20} className="text-fuchsia-400" />
             </div>
             <div className="text-left">
               <p className="text-white text-sm font-medium">Сканировать фото</p>
-              <p className="text-slate-400 text-[11px]">AI определит блюдо</p>
+              <p className="text-ddx-muted text-[11px]">AI определит блюдо</p>
             </div>
           </button>
           <button
             onClick={handleManual}
-            className="flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-2xl px-5 py-3 shadow-xl hover:bg-slate-700 transition-all active:scale-95"
+            className="flex items-center gap-3 bg-ddx-elevated border border-ddx-border2 rounded-2xl px-5 py-3 shadow-neon-purple hover:border-violet-500/60 transition-all active:scale-95"
           >
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-              <Plus size={20} className="text-emerald-400" />
+            <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
+              <Plus size={20} className="text-violet-400" />
             </div>
             <div className="text-left">
               <p className="text-white text-sm font-medium">Добавить вручную</p>
-              <p className="text-slate-400 text-[11px]">Поиск или ручной ввод</p>
+              <p className="text-ddx-muted text-[11px]">Поиск или ручной ввод</p>
             </div>
           </button>
         </div>
       )}
 
       {/* Bottom navigation */}
-      <nav className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-slate-800/95 backdrop-blur-md border-t border-slate-700/50 z-40">
+      <nav className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-ddx-card/95 backdrop-blur-md border-t border-ddx-border z-40">
         <div className="flex items-center justify-around px-2 py-2">
           {TABS.map(({ id, label, Icon }, i) => {
             if (i === 1) {
@@ -81,7 +80,7 @@ export default function Layout({ activeTab, setActiveTab, onScanClick, onAddMeal
                 onClick={() => setActiveTab(id)}
                 className={clsx(
                   'flex flex-col items-center gap-1 px-5 py-1.5 rounded-2xl transition-all',
-                  active ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-200'
+                  active ? 'text-violet-400' : 'text-ddx-muted hover:text-ddx-text'
                 )}
               >
                 <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
@@ -96,10 +95,10 @@ export default function Layout({ activeTab, setActiveTab, onScanClick, onAddMeal
       <button
         onClick={() => setFabOpen(!fabOpen)}
         className={clsx(
-          'fixed bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full shadow-xl flex items-center justify-center transition-all z-50',
+          'fixed bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center transition-all z-50',
           fabOpen
-            ? 'bg-slate-700 rotate-45 shadow-slate-700/40'
-            : 'bg-emerald-500 hover:bg-emerald-400 active:scale-95 shadow-emerald-500/40'
+            ? 'bg-ddx-elevated border-2 border-ddx-border2 rotate-45 shadow-neon-purple'
+            : 'bg-violet-600 hover:bg-violet-500 active:scale-95 shadow-neon-purple'
         )}
         aria-label="Добавить блюдо"
       >

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAppStore } from '../store/useAppStore'
-import { Trash2, Search, X, CalendarDays, Flame } from 'lucide-react'
+import { Trash2, Search, X, CalendarDays, Flame, Plus, UtensilsCrossed } from 'lucide-react'
 import clsx from 'clsx'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ const groupByDate = (meals) => {
 }
 
 // ─── History ──────────────────────────────────────────────────────────────────
-export default function History() {
+export default function History({ onAddMeal }) {
   const meals      = useAppStore((s) => s.meals)
   const user       = useAppStore((s) => s.currentUser)
   const deleteMeal = useAppStore((s) => s.deleteMeal)
@@ -40,13 +40,11 @@ export default function History() {
   const [period,  setPeriod]  = useState('today')
   const [query,   setQuery]   = useState('')
 
-  // 1. Filter by user
   const userMeals = useMemo(
     () => meals.filter((m) => m.userId === user?.id),
     [meals, user]
   )
 
-  // 2. Filter by period
   const periodFiltered = useMemo(() => {
     const now = Date.now()
     if (period === 'today') return userMeals.filter((m) => m.timestamp >= startOfDay(now))
@@ -55,14 +53,12 @@ export default function History() {
     return userMeals
   }, [userMeals, period])
 
-  // 3. Filter by search query
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return periodFiltered
     return periodFiltered.filter((m) => m.name.toLowerCase().includes(q))
   }, [periodFiltered, query])
 
-  // 4. Totals for filtered set
   const totals = useMemo(() => ({
     calories: filtered.reduce((a, m) => a + m.calories, 0),
     protein:  filtered.reduce((a, m) => a + m.protein,  0),
@@ -70,7 +66,6 @@ export default function History() {
     carbs:    filtered.reduce((a, m) => a + m.carbs,    0),
   }), [filtered])
 
-  // 5. Group by date
   const groups = useMemo(() => groupByDate(filtered), [filtered])
 
   return (
@@ -104,7 +99,7 @@ export default function History() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Поиск по названию блюда…"
+          placeholder="Поиск по названию блюда..."
           className="input-field pl-10 pr-10"
         />
         {query && (
@@ -140,18 +135,31 @@ export default function History() {
 
       {/* Groups */}
       {groups.length === 0 ? (
-        <div className="bg-slate-800 rounded-2xl p-10 text-center">
-          <p className="text-3xl mb-3">🔍</p>
-          <p className="text-slate-300 font-medium">Ничего не найдено</p>
-          <p className="text-slate-500 text-sm mt-1">
-            {query ? 'Попробуйте другой запрос' : 'За этот период нет записей'}
-          </p>
+        <div className="bg-slate-800 rounded-2xl p-10 text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-slate-700 flex items-center justify-center animate-pulse-slow">
+            <UtensilsCrossed size={32} className="text-slate-500" />
+          </div>
+          <div>
+            <p className="text-slate-300 font-medium">
+              {query ? 'Ничего не найдено' : 'Нет записей за этот период'}
+            </p>
+            <p className="text-slate-500 text-sm mt-1">
+              {query ? 'Попробуйте другой запрос' : 'Добавьте первый приём пищи'}
+            </p>
+          </div>
+          {!query && (
+            <button
+              onClick={onAddMeal}
+              className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white font-medium rounded-xl transition-all active:scale-95 inline-flex items-center gap-2 text-sm mx-auto"
+            >
+              <Plus size={16} /> Добавить блюдо
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-5 pb-4">
           {groups.map((group) => (
             <div key={group.label}>
-              {/* Date label */}
               <div className="flex items-center gap-2 mb-2">
                 <CalendarDays size={13} className="text-slate-500" />
                 <span className="text-xs text-slate-400 font-medium">{group.label}</span>
@@ -161,7 +169,6 @@ export default function History() {
                 </span>
               </div>
 
-              {/* Meals */}
               <div className="space-y-2">
                 {[...group.meals].reverse().map((meal) => (
                   <div key={meal.id} className="bg-slate-800 rounded-2xl p-4 flex items-center gap-3">

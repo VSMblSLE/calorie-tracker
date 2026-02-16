@@ -2,23 +2,28 @@ import { useRef, useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { useAppStore } from './store/useAppStore'
 import Auth from './components/Auth'
+import Onboarding from './components/Onboarding'
 import Layout from './components/Layout'
 import Dashboard from './components/Dashboard'
 import History from './components/History'
 import Profile from './components/Profile'
 import ScannerModal from './components/ScannerModal'
+import AddMealModal from './components/AddMealModal'
 
 export default function App() {
-  const currentUser = useAppStore((s) => s.currentUser)
+  const currentUser   = useAppStore((s) => s.currentUser)
+  const onboardingDone = useAppStore((s) => s.onboardingDone)
+  const setOnboardingDone = useAppStore((s) => s.setOnboardingDone)
 
-  const [activeTab,   setActiveTab]   = useState('dashboard')
-  const [pendingFile, setPendingFile] = useState(null)
+  const [activeTab,    setActiveTab]    = useState('dashboard')
+  const [pendingFile,  setPendingFile]  = useState(null)
+  const [showAddMeal,  setShowAddMeal]  = useState(false)
   const fileRef = useRef(null)
 
-  // ── File picker handlers (triggered by FAB) ────────────────────────────────
-  const handleFabClick = () => {
+  // ── File picker handlers (triggered by FAB → Scan) ─────────────────────────
+  const handleScanClick = () => {
     if (fileRef.current) {
-      fileRef.current.value = '' // allow same file re-selection
+      fileRef.current.value = ''
       fileRef.current.click()
     }
   }
@@ -30,6 +35,19 @@ export default function App() {
   }
 
   const handleScanClose = () => setPendingFile(null)
+
+  // ── Manual meal entry ──────────────────────────────────────────────────────
+  const handleAddMeal = () => setShowAddMeal(true)
+
+  // ── Onboarding gate ────────────────────────────────────────────────────────
+  if (!onboardingDone) {
+    return (
+      <>
+        <ToasterConfig />
+        <Onboarding onDone={setOnboardingDone} />
+      </>
+    )
+  }
 
   // ── Auth gate ──────────────────────────────────────────────────────────────
   if (!currentUser) {
@@ -45,7 +63,7 @@ export default function App() {
     <>
       <ToasterConfig />
 
-      {/* Hidden file input — triggered by FAB click */}
+      {/* Hidden file input — triggered by FAB → Scan */}
       <input
         ref={fileRef}
         type="file"
@@ -55,14 +73,22 @@ export default function App() {
         onChange={handleFileChange}
       />
 
-      <Layout activeTab={activeTab} setActiveTab={setActiveTab} onScanClick={handleFabClick}>
-        {activeTab === 'dashboard' && <Dashboard />}
-        {activeTab === 'history'   && <History />}
+      <Layout
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onScanClick={handleScanClick}
+        onAddMeal={handleAddMeal}
+      >
+        {activeTab === 'dashboard' && <Dashboard onAddMeal={handleAddMeal} onScanClick={handleScanClick} />}
+        {activeTab === 'history'   && <History onAddMeal={handleAddMeal} />}
         {activeTab === 'profile'   && <Profile />}
       </Layout>
 
-      {/* Analysis overlay + edit modal */}
+      {/* AI Scanner overlay */}
       <ScannerModal file={pendingFile} onClose={handleScanClose} />
+
+      {/* Manual meal entry modal */}
+      {showAddMeal && <AddMealModal onClose={() => setShowAddMeal(false)} />}
     </>
   )
 }

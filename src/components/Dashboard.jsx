@@ -3,6 +3,7 @@ import { useAppStore } from '../store/useAppStore'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts'
 import { Flame, Beef, Droplets, Wheat, Trash2, TrendingUp, Plus, Camera } from 'lucide-react'
 import WaterTracker from './WaterTracker'
+import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
 const isToday = (ts) => new Date(ts).toDateString() === new Date().toDateString()
@@ -281,7 +282,7 @@ export default function Dashboard({ onAddMeal, onScanClick }) {
                   </div>
                 </div>
                 <button
-                  onClick={() => deleteMeal(meal.id)}
+                  onClick={() => deleteMeal(meal.id).catch((e) => toast.error(e.message))}
                   className="p-2 text-ddx-dim hover:text-rose-400 transition-colors rounded-xl hover:bg-rose-500/10 shrink-0"
                 >
                   <Trash2 size={16} />

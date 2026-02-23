@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useAppStore } from '../store/useAppStore'
 import { Trash2, Search, X, CalendarDays, Flame, Plus, UtensilsCrossed } from 'lucide-react'
+import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
 const startOfDay   = (d) => new Date(d).setHours(0, 0, 0, 0)
@@ -179,7 +180,7 @@ export default function History({ onAddMeal }) {
                       </div>
                     </div>
                     <button
-                      onClick={() => deleteMeal(meal.id)}
+                      onClick={() => deleteMeal(meal.id).catch((e) => toast.error(e.message))}
                       className="p-2 text-ddx-dim hover:text-rose-400 transition-colors rounded-xl hover:bg-rose-500/10 shrink-0"
                     >
                       <Trash2 size={16} />

@@ -30,10 +30,10 @@ export default function Auth() {
     setLoading(true)
     try {
       if (mode === 'login') {
-        login({ email: form.email, password: form.password })
+        await login({ email: form.email, password: form.password })
         toast.success('Добро пожаловать!')
       } else {
-        register({ name: form.name, email: form.email, password: form.password })
+        await register({ name: form.name, email: form.email, password: form.password })
         toast.success('Аккаунт создан!')
       }
     } catch (err) {
@@ -136,7 +136,7 @@ export default function Auth() {
       </div>
 
       <p className="text-ddx-dim text-xs mt-6 text-center px-4">
-        Данные хранятся только на вашем устройстве
+        Данные синхронизируются через Supabase
       </p>
     </div>
   )

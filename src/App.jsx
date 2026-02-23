@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
+import { Loader2 } from 'lucide-react'
 import { useAppStore } from './store/useAppStore'
 import Auth from './components/Auth'
 import Onboarding from './components/Onboarding'
@@ -11,14 +12,21 @@ import ScannerModal from './components/ScannerModal'
 import AddMealModal from './components/AddMealModal'
 
 export default function App() {
-  const currentUser   = useAppStore((s) => s.currentUser)
+  const currentUser    = useAppStore((s) => s.currentUser)
   const onboardingDone = useAppStore((s) => s.onboardingDone)
+  const authLoading    = useAppStore((s) => s.authLoading)
+  const initAuth       = useAppStore((s) => s.initAuth)
   const setOnboardingDone = useAppStore((s) => s.setOnboardingDone)
 
-  const [activeTab,    setActiveTab]    = useState('dashboard')
-  const [pendingFile,  setPendingFile]  = useState(null)
-  const [showAddMeal,  setShowAddMeal]  = useState(false)
+  const [activeTab,   setActiveTab]   = useState('dashboard')
+  const [pendingFile, setPendingFile] = useState(null)
+  const [showAddMeal, setShowAddMeal] = useState(false)
   const fileRef = useRef(null)
+
+  useEffect(() => {
+    const unsubscribe = initAuth()
+    return unsubscribe
+  }, [])
 
   const handleScanClick = () => {
     if (fileRef.current) {
@@ -34,13 +42,24 @@ export default function App() {
   }
 
   const handleScanClose = () => setPendingFile(null)
-  const handleAddMeal = () => setShowAddMeal(true)
+  const handleAddMeal   = () => setShowAddMeal(true)
 
   if (!onboardingDone) {
     return (
       <>
         <ToasterConfig />
         <Onboarding onDone={setOnboardingDone} />
+      </>
+    )
+  }
+
+  if (authLoading) {
+    return (
+      <>
+        <ToasterConfig />
+        <div className="min-h-screen bg-ddx-bg flex items-center justify-center">
+          <Loader2 size={36} className="text-violet-400 animate-spin" />
+        </div>
       </>
     )
   }

@@ -161,9 +161,9 @@ export default function AddMealModal({ onClose }) {
   const handleSelect = (food) => { setSelected(food); setView('form') }
   const handleManualEntry = () => { setSelected(null); setView('form') }
 
-  const handleSave = (data) => {
+  const handleSave = async (data) => {
     try {
-      addMeal(data)
+      await addMeal(data)
       toast.success(`${data.name} +${data.calories} ккал`)
       onClose()
     } catch (err) {

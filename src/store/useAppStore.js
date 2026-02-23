@@ -1,31 +1,32 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { supabase, dbMealToApp, appMealToDb, dbWaterToApp, dbProfileToUser } from '../services/supabase'
 
 // ─── Mock data for demo mode ──────────────────────────────────────────────────
 const now = Date.now()
 const day = 86_400_000
 
 const MOCK_MEALS = [
-  { id: 'm1', userId: 'demo', name: 'Овсянка с бананом и мёдом',        calories: 320, protein: 10, fat: 5,  carbs: 60, weight_g: 250, timestamp: now - day * 0 - 7_200_000 },
-  { id: 'm2', userId: 'demo', name: 'Куриная грудка с рисом',            calories: 480, protein: 45, fat: 8,  carbs: 52, weight_g: 350, timestamp: now - day * 0 - 3_600_000 },
-  { id: 'm3', userId: 'demo', name: 'Греческий йогурт с ягодами',        calories: 150, protein: 15, fat: 3,  carbs: 18, weight_g: 200, timestamp: now - day * 0 - 1_800_000 },
-  { id: 'm4', userId: 'demo', name: 'Борщ со сметаной',                  calories: 290, protein: 12, fat: 10, carbs: 35, weight_g: 400, timestamp: now - day * 1 - 3_600_000 },
-  { id: 'm5', userId: 'demo', name: 'Гречка с котлетой',                 calories: 520, protein: 38, fat: 15, carbs: 55, weight_g: 350, timestamp: now - day * 1 - 7_200_000 },
-  { id: 'm6', userId: 'demo', name: 'Салат Цезарь с курицей',            calories: 380, protein: 28, fat: 22, carbs: 18, weight_g: 300, timestamp: now - day * 2 - 3_600_000 },
-  { id: 'm7', userId: 'demo', name: 'Пицца Маргарита (2 кусочка)',       calories: 540, protein: 20, fat: 18, carbs: 72, weight_g: 280, timestamp: now - day * 3 - 5_400_000 },
-  { id: 'm8', userId: 'demo', name: 'Творог 5% с ягодами',              calories: 180, protein: 22, fat: 5,  carbs: 14, weight_g: 200, timestamp: now - day * 4 - 3_600_000 },
-  { id: 'm9', userId: 'demo', name: 'Лосось на гриле с овощами',         calories: 420, protein: 42, fat: 20, carbs: 12, weight_g: 300, timestamp: now - day * 5 - 3_600_000 },
-  { id:'m10', userId: 'demo', name: 'Суп-пюре из тыквы',                 calories: 160, protein:  5, fat:  6, carbs: 22, weight_g: 350, timestamp: now - day * 6 - 5_400_000 },
+  { name: 'Овсянка с бананом и мёдом',        calories: 320, protein: 10, fat: 5,  carbs: 60, weight_g: 250, timestamp: now - day * 0 - 7_200_000 },
+  { name: 'Куриная грудка с рисом',            calories: 480, protein: 45, fat: 8,  carbs: 52, weight_g: 350, timestamp: now - day * 0 - 3_600_000 },
+  { name: 'Греческий йогурт с ягодами',        calories: 150, protein: 15, fat: 3,  carbs: 18, weight_g: 200, timestamp: now - day * 0 - 1_800_000 },
+  { name: 'Борщ со сметаной',                  calories: 290, protein: 12, fat: 10, carbs: 35, weight_g: 400, timestamp: now - day * 1 - 3_600_000 },
+  { name: 'Гречка с котлетой',                 calories: 520, protein: 38, fat: 15, carbs: 55, weight_g: 350, timestamp: now - day * 1 - 7_200_000 },
+  { name: 'Салат Цезарь с курицей',            calories: 380, protein: 28, fat: 22, carbs: 18, weight_g: 300, timestamp: now - day * 2 - 3_600_000 },
+  { name: 'Пицца Маргарита (2 кусочка)',       calories: 540, protein: 20, fat: 18, carbs: 72, weight_g: 280, timestamp: now - day * 3 - 5_400_000 },
+  { name: 'Творог 5% с ягодами',              calories: 180, protein: 22, fat: 5,  carbs: 14, weight_g: 200, timestamp: now - day * 4 - 3_600_000 },
+  { name: 'Лосось на гриле с овощами',         calories: 420, protein: 42, fat: 20, carbs: 12, weight_g: 300, timestamp: now - day * 5 - 3_600_000 },
+  { name: 'Суп-пюре из тыквы',                 calories: 160, protein:  5, fat:  6, carbs: 22, weight_g: 350, timestamp: now - day * 6 - 5_400_000 },
 ]
 
 const MOCK_WATER = [
-  { id: 'w1', userId: 'demo', amount: 250, timestamp: now - 7_200_000 },
-  { id: 'w2', userId: 'demo', amount: 300, timestamp: now - 5_400_000 },
-  { id: 'w3', userId: 'demo', amount: 200, timestamp: now - 3_600_000 },
-  { id: 'w4', userId: 'demo', amount: 250, timestamp: now - 1_800_000 },
-  { id: 'w5', userId: 'demo', amount: 350, timestamp: now - day * 1 - 3_600_000 },
-  { id: 'w6', userId: 'demo', amount: 250, timestamp: now - day * 1 - 7_200_000 },
-  { id: 'w7', userId: 'demo', amount: 300, timestamp: now - day * 2 - 5_400_000 },
+  { amount: 250, timestamp: now - 7_200_000 },
+  { amount: 300, timestamp: now - 5_400_000 },
+  { amount: 200, timestamp: now - 3_600_000 },
+  { amount: 250, timestamp: now - 1_800_000 },
+  { amount: 350, timestamp: now - day * 1 - 3_600_000 },
+  { amount: 250, timestamp: now - day * 1 - 7_200_000 },
+  { amount: 300, timestamp: now - day * 2 - 5_400_000 },
 ]
 
 // ─── Popular food database (local) ─────────────────────────────────────────────
@@ -84,108 +85,229 @@ export const useAppStore = create(
       setOnboardingDone: () => set({ onboardingDone: true }),
 
       // ── Auth ──────────────────────────────────────────────────────────────
-      users:       [],
       currentUser: null,
+      authLoading: true,
 
-      register: ({ name, email, password }) => {
-        const users = get().users
-        if (users.find((u) => u.email.toLowerCase() === email.toLowerCase())) {
-          throw new Error('Пользователь с таким email уже существует')
-        }
-        const newUser = {
-          id: `u_${Date.now()}`,
-          name:      name.trim(),
-          email:     email.trim().toLowerCase(),
-          password,
-          weight:    70,
-          height:    170,
-          age:       25,
-          waterGoal: 2000,
-          createdAt: Date.now(),
-        }
-        const goals = { calories: 2000, protein: 150, fat: 65, carbs: 250 }
-        set((s) => ({ users: [...s.users, newUser], currentUser: { ...newUser, goals } }))
-      },
-
-      login: ({ email, password }) => {
-        const user = get().users.find(
-          (u) => u.email === email.trim().toLowerCase() && u.password === password
+      initAuth: () => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (_event, session) => {
+            if (session?.user) {
+              await get().loadUserData(session.user)
+            } else {
+              set({ currentUser: null, meals: [], waterLog: [], authLoading: false })
+            }
+          }
         )
-        if (!user) throw new Error('Неверный email или пароль')
-        const goals = user.goals ?? { calories: 2000, protein: 150, fat: 65, carbs: 250 }
-        set({ currentUser: { ...user, goals } })
+        return () => subscription.unsubscribe()
       },
 
-      logout: () => set({ currentUser: null }),
+      loadUserData: async (authUser) => {
+        const uid = authUser.id
+        const email = authUser.email
 
-      updateProfile: (updates) =>
-        set((s) => {
-          const updated = { ...s.currentUser, ...updates }
-          const users = s.users.map((u) => (u.id === updated.id ? { ...u, ...updates } : u))
-          return { currentUser: updated, users }
-        }),
+        const [profileRes, mealsRes, waterRes] = await Promise.all([
+          supabase.from('profiles').select('*').eq('id', uid).single(),
+          supabase.from('meals').select('*').eq('user_id', uid).order('eaten_at', { ascending: false }),
+          supabase.from('water_log').select('*').eq('user_id', uid).order('logged_at', { ascending: false }),
+        ])
+
+        let currentUser
+        if (profileRes.data) {
+          currentUser = dbProfileToUser(profileRes.data, email)
+        } else {
+          const name = authUser.user_metadata?.name ?? ''
+          const defaults = {
+            id: uid, name, weight: 70, height: 170, age: 25,
+            water_goal: 2000, goal_calories: 2000, goal_protein: 150, goal_fat: 65, goal_carbs: 250,
+          }
+          await supabase.from('profiles').upsert(defaults)
+          currentUser = { id: uid, email, name, weight: 70, height: 170, age: 25, waterGoal: 2000, goals: { calories: 2000, protein: 150, fat: 65, carbs: 250 } }
+        }
+
+        const meals    = (mealsRes.data    ?? []).map(dbMealToApp)
+        const waterLog = (waterRes.data    ?? []).map(dbWaterToApp)
+
+        set({ currentUser, meals, waterLog, authLoading: false })
+      },
+
+      register: async ({ name, email, password }) => {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { name: name.trim() } },
+        })
+        if (error) throw new Error(error.message)
+      },
+
+      login: async ({ email, password }) => {
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) throw new Error(error.message)
+      },
+
+      logout: async () => {
+        await supabase.auth.signOut()
+      },
+
+      updateProfile: async (updates) => {
+        const user = get().currentUser
+        if (!user) return
+
+        // Optimistic update
+        const prev = get().currentUser
+        const merged = { ...user, ...updates }
+        set({ currentUser: merged })
+
+        const dbUpdates = {}
+        if (updates.name      !== undefined) dbUpdates.name          = updates.name
+        if (updates.weight    !== undefined) dbUpdates.weight        = updates.weight
+        if (updates.height    !== undefined) dbUpdates.height        = updates.height
+        if (updates.age       !== undefined) dbUpdates.age           = updates.age
+        if (updates.waterGoal !== undefined) dbUpdates.water_goal    = updates.waterGoal
+        if (updates.goals) {
+          if (updates.goals.calories !== undefined) dbUpdates.goal_calories = updates.goals.calories
+          if (updates.goals.protein  !== undefined) dbUpdates.goal_protein  = updates.goals.protein
+          if (updates.goals.fat      !== undefined) dbUpdates.goal_fat      = updates.goals.fat
+          if (updates.goals.carbs    !== undefined) dbUpdates.goal_carbs    = updates.goals.carbs
+        }
+
+        const { error } = await supabase.from('profiles').update(dbUpdates).eq('id', user.id)
+        if (error) {
+          set({ currentUser: prev })
+          throw new Error(error.message)
+        }
+      },
 
       // ── Meals ─────────────────────────────────────────────────────────────
       meals: [],
 
-      addMeal: (meal) => {
+      addMeal: async (meal) => {
         const user = get().currentUser
         if (!user) throw new Error('Не авторизован')
-        const entry = {
+
+        const tempId = `tmp_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+        const optimistic = {
           ...meal,
-          id:        `meal_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          id:        tempId,
           userId:    user.id,
-          timestamp: Date.now(),
+          timestamp: meal.timestamp ?? Date.now(),
         }
-        set((s) => ({ meals: [...s.meals, entry] }))
-        return entry
+
+        // Optimistic insert
+        const prevMeals = get().meals
+        set((s) => ({ meals: [optimistic, ...s.meals] }))
+
+        const { data, error } = await supabase
+          .from('meals')
+          .insert(appMealToDb(optimistic, user.id))
+          .select()
+          .single()
+
+        if (error) {
+          set({ meals: prevMeals })
+          throw new Error(error.message)
+        }
+
+        // Replace temp entry with real DB row
+        set((s) => ({
+          meals: s.meals.map((m) => (m.id === tempId ? dbMealToApp(data) : m)),
+        }))
+
+        return dbMealToApp(data)
       },
 
-      deleteMeal: (id) =>
-        set((s) => ({ meals: s.meals.filter((m) => m.id !== id) })),
+      deleteMeal: async (id) => {
+        const prevMeals = get().meals
+        set((s) => ({ meals: s.meals.filter((m) => m.id !== id) }))
+
+        const { error } = await supabase.from('meals').delete().eq('id', id)
+        if (error) {
+          set({ meals: prevMeals })
+          throw new Error(error.message)
+        }
+      },
 
       // ── Water ─────────────────────────────────────────────────────────────
       waterLog: [],
 
-      addWater: (amount) => {
+      addWater: async (amount) => {
         const user = get().currentUser
         if (!user) return
-        const entry = {
-          id: `w_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`,
-          userId: user.id,
-          amount,
-          timestamp: Date.now(),
+
+        const tempId = `tmp_w_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`
+        const optimistic = { id: tempId, userId: user.id, amount, timestamp: Date.now() }
+
+        const prevWater = get().waterLog
+        set((s) => ({ waterLog: [optimistic, ...s.waterLog] }))
+
+        const { data, error } = await supabase
+          .from('water_log')
+          .insert({ user_id: user.id, amount, logged_at: new Date().toISOString() })
+          .select()
+          .single()
+
+        if (error) {
+          set({ waterLog: prevWater })
+          throw new Error(error.message)
         }
-        set((s) => ({ waterLog: [...s.waterLog, entry] }))
-        return entry
+
+        set((s) => ({
+          waterLog: s.waterLog.map((w) => (w.id === tempId ? dbWaterToApp(data) : w)),
+        }))
+
+        return dbWaterToApp(data)
       },
 
-      deleteWater: (id) =>
-        set((s) => ({ waterLog: s.waterLog.filter((w) => w.id !== id) })),
+      deleteWater: async (id) => {
+        const prevWater = get().waterLog
+        set((s) => ({ waterLog: s.waterLog.filter((w) => w.id !== id) }))
+
+        const { error } = await supabase.from('water_log').delete().eq('id', id)
+        if (error) {
+          set({ waterLog: prevWater })
+          throw new Error(error.message)
+        }
+      },
 
       // ── API Key ───────────────────────────────────────────────────────────
       apiKey: '',
       setApiKey: (key) => set({ apiKey: key }),
 
       // ── Demo Mode ─────────────────────────────────────────────────────────
-      loadMockData: () => {
+      loadMockData: async () => {
         const user = get().currentUser
         if (!user) return
-        const taggedMeals = MOCK_MEALS.map((m) => ({ ...m, userId: user.id }))
-        const taggedWater = MOCK_WATER.map((w) => ({ ...w, userId: user.id }))
-        set((s) => ({
-          meals:    [...s.meals.filter((m) => m.userId !== user.id), ...taggedMeals],
-          waterLog: [...s.waterLog.filter((w) => w.userId !== user.id), ...taggedWater],
+
+        const mealRows = MOCK_MEALS.map((m) => appMealToDb(m, user.id))
+        const waterRows = MOCK_WATER.map((w) => ({
+          user_id: user.id,
+          amount: w.amount,
+          logged_at: new Date(w.timestamp).toISOString(),
         }))
+
+        const [{ error: me }, { error: we }] = await Promise.all([
+          supabase.from('meals').insert(mealRows),
+          supabase.from('water_log').insert(waterRows),
+        ])
+
+        if (me) throw new Error(me.message)
+        if (we) throw new Error(we.message)
+
+        await get().loadUserData({ id: user.id, email: user.email })
       },
 
-      clearUserMeals: () => {
+      clearUserMeals: async () => {
         const user = get().currentUser
         if (!user) return
-        set((s) => ({
-          meals:    s.meals.filter((m) => m.userId !== user.id),
-          waterLog: s.waterLog.filter((w) => w.userId !== user.id),
-        }))
+
+        set({ meals: [], waterLog: [] })
+
+        const [{ error: me }, { error: we }] = await Promise.all([
+          supabase.from('meals').delete().eq('user_id', user.id),
+          supabase.from('water_log').delete().eq('user_id', user.id),
+        ])
+
+        if (me) throw new Error(me.message)
+        if (we) throw new Error(we.message)
       },
 
       // ── Export / Import ───────────────────────────────────────────────────
@@ -202,33 +324,43 @@ export const useAppStore = create(
         }
       },
 
-      importData: (data) => {
+      importData: async (data) => {
         const user = get().currentUser
         if (!user || !data) throw new Error('Невалидные данные')
-        const taggedMeals = (data.meals || []).map((m) => ({ ...m, userId: user.id }))
-        const taggedWater = (data.waterLog || []).map((w) => ({ ...w, userId: user.id }))
-        set((s) => ({
-          meals:    [...s.meals.filter((m) => m.userId !== user.id), ...taggedMeals],
-          waterLog: [...s.waterLog.filter((w) => w.userId !== user.id), ...taggedWater],
+
+        const mealRows  = (data.meals    || []).map((m) => appMealToDb(m, user.id))
+        const waterRows = (data.waterLog || []).map((w) => ({
+          user_id:   user.id,
+          amount:    w.amount,
+          logged_at: new Date(w.timestamp).toISOString(),
         }))
+
+        if (mealRows.length > 0) {
+          const { error } = await supabase.from('meals').insert(mealRows)
+          if (error) throw new Error(error.message)
+        }
+
+        if (waterRows.length > 0) {
+          const { error } = await supabase.from('water_log').insert(waterRows)
+          if (error) throw new Error(error.message)
+        }
+
         if (data.user) {
-          get().updateProfile({
-            goals: data.user.goals,
-            weight: data.user.weight,
-            height: data.user.height,
-            age: data.user.age,
+          await get().updateProfile({
+            goals:     data.user.goals,
+            weight:    data.user.weight,
+            height:    data.user.height,
+            age:       data.user.age,
             waterGoal: data.user.waterGoal,
           })
         }
+
+        await get().loadUserData({ id: user.id, email: user.email })
       },
     }),
     {
       name: 'calorie-ai-v3',
       partialize: (s) => ({
-        users:          s.users,
-        currentUser:    s.currentUser,
-        meals:          s.meals,
-        waterLog:       s.waterLog,
         apiKey:         s.apiKey,
         onboardingDone: s.onboardingDone,
       }),

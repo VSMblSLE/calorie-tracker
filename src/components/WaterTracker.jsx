@@ -35,12 +35,16 @@ export default function WaterTracker() {
   const pct = waterGoal > 0 ? Math.min((totalToday / waterGoal) * 100, 100) : 0
   const glasses = Math.round(totalToday / 250)
 
-  const handleAdd = (amount) => {
-    addWater(amount)
-    if (totalToday + amount >= waterGoal && totalToday < waterGoal) {
-      toast.success('Норма воды выполнена!')
-    } else {
-      toast.success(`+${amount} мл`)
+  const handleAdd = async (amount) => {
+    try {
+      await addWater(amount)
+      if (totalToday + amount >= waterGoal && totalToday < waterGoal) {
+        toast.success('Норма воды выполнена!')
+      } else {
+        toast.success(`+${amount} мл`)
+      }
+    } catch (err) {
+      toast.error(err.message)
     }
   }
 
@@ -150,7 +154,7 @@ export default function WaterTracker() {
               <div className="h-2 w-2 rounded-full bg-cyan-500" style={{ boxShadow: '0 0 6px #06b6d4' }} />
               <span className="text-cyan-400 font-medium flex-1">+{w.amount} мл</span>
               <button
-                onClick={() => deleteWater(w.id)}
+                onClick={() => deleteWater(w.id).catch((e) => toast.error(e.message))}
                 className="p-1 text-ddx-dim hover:text-rose-400 transition-colors"
               >
                 <Trash2 size={12} />

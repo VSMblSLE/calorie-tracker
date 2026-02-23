@@ -92,23 +92,35 @@ export default function Profile() {
     toast.success('API ключ сохранён')
   }
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     if (!profile.name.trim()) { toast.error('Введите имя'); return }
     if (profile.weight < 30 || profile.weight > 300) { toast.error('Вес: 30-300 кг'); return }
     if (profile.height < 100 || profile.height > 250) { toast.error('Рост: 100-250 см'); return }
     if (profile.age < 10 || profile.age > 120) { toast.error('Возраст: 10-120 лет'); return }
-    updateProfile({ ...profile })
-    toast.success('Профиль обновлён')
+    try {
+      await updateProfile({ ...profile })
+      toast.success('Профиль обновлён')
+    } catch (err) {
+      toast.error(err.message)
+    }
   }
 
-  const handleSaveGoals = () => {
-    updateProfile({ goals })
-    toast.success('Цели обновлены')
+  const handleSaveGoals = async () => {
+    try {
+      await updateProfile({ goals })
+      toast.success('Цели обновлены')
+    } catch (err) {
+      toast.error(err.message)
+    }
   }
 
-  const handleLoadMock = () => {
-    loadMockData()
-    toast.success('Тестовые данные загружены!')
+  const handleLoadMock = async () => {
+    try {
+      await loadMockData()
+      toast.success('Тестовые данные загружены!')
+    } catch (err) {
+      toast.error(err.message)
+    }
   }
 
   const handleClear = () => {
@@ -118,16 +130,20 @@ export default function Profile() {
       confirmText: 'Удалить всё',
       danger: true,
       requireCheck: true,
-      onConfirm: () => {
-        clearUserMeals()
-        toast.success('Все записи удалены')
+      onConfirm: async () => {
+        try {
+          await clearUserMeals()
+          toast.success('Все записи удалены')
+        } catch (err) {
+          toast.error(err.message)
+        }
         setConfirmDialog(null)
       },
     })
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     toast('Вы вышли из аккаунта')
   }
 
@@ -148,10 +164,10 @@ export default function Profile() {
     const file = e.target.files?.[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const data = JSON.parse(reader.result)
-        importData(data)
+        await importData(data)
         toast.success(`Импортировано: ${data.meals?.length || 0} блюд`)
       } catch {
         toast.error('Ошибка чтения файла')
@@ -246,7 +262,7 @@ export default function Profile() {
       <Section icon={Droplets} title="Норма воды">
         <SliderField label="Дневная норма" unit="мл" value={profile.waterGoal} min={500} max={5000} step={100} onChange={(v) => setProfile(p => ({ ...p, waterGoal: v }))} />
         <p className="text-ddx-dim text-xs">Рекомендация: ~30 мл на 1 кг веса = <span className="text-cyan-400 font-medium">{Math.round(profile.weight * 30)} мл</span></p>
-        <button onClick={() => { updateProfile({ waterGoal: profile.waterGoal }); toast.success('Норма воды обновлена') }} className="btn-primary w-full flex items-center justify-center gap-2">
+        <button onClick={async () => { try { await updateProfile({ waterGoal: profile.waterGoal }); toast.success('Норма воды обновлена') } catch (err) { toast.error(err.message) } }} className="btn-primary w-full flex items-center justify-center gap-2">
           <Save size={16} /> Сохранить
         </button>
       </Section>
@@ -279,10 +295,10 @@ export default function Profile() {
       </Section>
 
       {/* API Key */}
-      <Section icon={Key} title="Gemini API Key">
+      <Section icon={Key} title="Groq API Key">
         <p className="text-ddx-muted text-xs leading-relaxed">
           Получите бесплатный ключ на{' '}
-          <span className="text-violet-400 font-medium">aistudio.google.com</span>{' '}
+          <span className="text-violet-400 font-medium">console.groq.com</span>{' '}
           для AI-сканирования фото еды
         </p>
         <div className="relative">
@@ -290,7 +306,7 @@ export default function Profile() {
             type={showKey ? 'text' : 'password'}
             value={keyInput}
             onChange={(e) => setKeyInput(e.target.value)}
-            placeholder="AIzaSy..."
+            placeholder="gsk_..."
             className="input-field pr-12 font-mono text-sm"
           />
           <button onClick={() => setShowKey((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ddx-muted hover:text-white">
@@ -346,7 +362,7 @@ export default function Profile() {
       </Section>
 
       <div className="text-center pb-4">
-        <p className="text-ddx-dim text-xs">CalorieAI v2.0 • Данные хранятся локально</p>
+        <p className="text-ddx-dim text-xs">CalorieAI v3.0 • Данные синхронизируются через Supabase</p>
       </div>
     </div>
   )
